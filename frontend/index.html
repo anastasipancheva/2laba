@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Security Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Панель управления безопасностью</h1>
+        <section class="card">
+            <h2>1. Разблокировка Vault</h2>
+            <input type="text" id="keyPart" placeholder="Часть ключа">
+            <button onclick="unsealVault()">Отправить</button>
+            <p id="vaultStatus">Статус: Заблокировано</p>
+        </section>
+        <section class="card">
+            <h2>2. Секреты</h2>
+            <input type="text" id="secKey" placeholder="Ключ">
+            <input type="text" id="secVal" placeholder="Значение">
+            <button onclick="saveSecret()">Сохранить</button>
+            <div id="secretResult"></div>
+        </section>
+        <section class="card">
+            <h2>3. Подпись файла</h2>
+            <input type="file" id="fileInput">
+            <select id="algo">
+                <option value="strong">RSA-PSS</option>
+                <option value="weak">Weak Hash</option>
+            </select>
+            <button onclick="signFile()">Подписать</button>
+            <pre id="signOutput"></pre>
+        </section>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
