@@ -9,27 +9,70 @@
     <div class="container">
         <h1>Панель управления безопасностью</h1>
         <section class="card">
-            <h2>1. Разблокировка Vault</h2>
-            <input type="text" id="keyPart" placeholder="Часть ключа">
-            <button onclick="unsealVault()">Отправить</button>
-            <p id="vaultStatus">Статус: Заблокировано</p>
+            <h2>1. Инициализация Vault (выдача 2 частей ключа)</h2>
+            <button onclick="initVault()">Сгенерировать 2 части ключа</button>
+            <label>Часть 1</label>
+            <textarea id="keyPart1" readonly placeholder="Нажмите “Сгенерировать 2 части ключа”"></textarea>
+            <button onclick="copyKey('keyPart1')">Копировать часть 1</button>
+            <label>Часть 2</label>
+            <textarea id="keyPart2" readonly placeholder="Нажмите “Сгенерировать 2 части ключа”"></textarea>
+            <button onclick="copyKey('keyPart2')">Копировать часть 2</button>
+            <p class="hint">Сохраните обе части: сервер их не хранит.</p>
         </section>
         <section class="card">
-            <h2>2. Секреты</h2>
+            <h2>2. Разблокировка Vault (Unseal)</h2>
+            <input type="text" id="keyPart" placeholder="Вставьте часть ключа (1 или 2)">
+            <button onclick="unsealVault()">Отправить часть</button>
+            <button onclick="sealVault()">Seal (заблокировать)</button>
+            <p id="vaultStatus">Статус: sealed</p>
+        </section>
+        <section class="card">
+            <h2>3. Секреты</h2>
             <input type="text" id="secKey" placeholder="Ключ">
             <input type="text" id="secVal" placeholder="Значение">
             <button onclick="saveSecret()">Сохранить</button>
+            <button onclick="getSecret()">Получить по ключу</button>
             <div id="secretResult"></div>
         </section>
         <section class="card">
-            <h2>3. Подпись файла</h2>
+            <h2>4. Wrap / Unwrap (токен с TTL)</h2>
+            <input type="text" id="wrapVal" placeholder="Секрет для wrap">
+            <button onclick="wrapSecret()">Wrap → получить токен</button>
+            <input type="text" id="wrapToken" placeholder="Токен для unwrap">
+            <button onclick="unwrapToken()">Unwrap → получить секрет</button>
+            <pre id="wrapOutput"></pre>
+        </section>
+        <section class="card">
+            <h2>5. Подпись файла</h2>
             <input type="file" id="fileInput">
-            <select id="algo">
-                <option value="strong">RSA-PSS</option>
-                <option value="weak">Weak Hash</option>
+            <select id="sigAlgo" onchange="onSigAlgoChange()">
+                <option value="rsa-pss">RSA-PSS</option>
+                <option value="ed25519">Ed25519</option>
+            </select>
+            <select id="hashAlgo">
+                <option value="sha256">SHA-256</option>
+                <option value="sha512">SHA-512</option>
             </select>
             <button onclick="signFile()">Подписать</button>
             <pre id="signOutput"></pre>
+        </section>
+        <section class="card">
+            <h2>6. Проверка подписи</h2>
+            <input type="file" id="verifyFileInput">
+            <input type="file" id="metaInput" accept=".json,application/json">
+            <button onclick="verifySignature()">Проверить</button>
+            <pre id="verifyOutput"></pre>
+        </section>
+        <section class="card">
+            <h2>7. Демо уязвимости слабого хеша</h2>
+            <p class="hint">
+                Идея: если вместо криптохеша использовать слабый хеш \(sum(bytes) mod 256\), то можно изменить файл так, чтобы хеш не изменился.
+                Выберите файл → посчитаем слабый хеш → сгенерируем “подделанный” файл с тем же слабым хешем.
+            </p>
+            <input type="file" id="weakFileInput">
+            <button onclick="weakHashCompute()">Посчитать слабый хеш</button>
+            <button onclick="weakHashForge()">Сломать файл (сохранить другой файл с тем же слабым хешем)</button>
+            <pre id="weakHashOutput"></pre>
         </section>
     </div>
     <script src="script.js"></script>
