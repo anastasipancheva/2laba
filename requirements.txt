@@ -1,0 +1,5 @@
+# Backend: FastAPI services (signature on :8001, vault on :8003)
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+cryptography>=42.0.0
+pydantic>=2.5.0
